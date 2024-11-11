@@ -1,28 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Details</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Book Details</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Book Details</h1>
-    </header>
-    <main>
-        <section id="book-details"></section>
-        <a href="index.html" class="button">Back to List</a>
-    </main>
-    <script src="script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const bookId = urlParams.get('id');
-            if (bookId) {
-                fetchBookDetails(bookId);
-            }
-        });
-    </script>
+  <h1>Book Details</h1>
+  <div id="book-details"></div>
+  <button onclick="window.location.href='index.html'">Back to Book List</button>
+  
+  <script src="book-details.js"></script>
 </body>
 </html>
