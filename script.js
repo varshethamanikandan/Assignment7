@@ -1,71 +1,71 @@
-const API_URL = 'https://mybooks-api.free.beeceptor.com';
+const API_URL = 'https://mymovies-api.free.beeceptor.com';
 
-async function fetchBooks() {
+async function fetchMovies() {
     try {
-        const response = await fetch(`${API_URL}/books`);
-        const books = await response.json();
-        displayBooks(books);
+        const response = await fetch(`${API_URL}/movies`);
+        const movies = await response.json();
+        displayMovies(movies);
     } catch (error) {
-        console.error('Error fetching books:', error);
+        console.error('Error fetching movies:', error);
     }
 }
 
-function displayBooks(books) {
-    const bookList = document.getElementById('books');
-    bookList.innerHTML = '';
-    books.forEach(book => {
+function displayMovies(movies) {
+    const movieList = document.getElementById('movies');
+    movieList.innerHTML = '';
+    movies.forEach(movie => {
         const li = document.createElement('li');
-        li.innerHTML = `<a href="book-details.html?id=${book.id}">${book.title}</a>`;
-        bookList.appendChild(li);
+        li.innerHTML = `<a href="movie-details.html?id=${movie.id}">${movie.title}</a>`;
+        movieList.appendChild(li);
     });
 }
 
-async function fetchBookDetails(bookId) {
+async function fetchMovieDetails(movieId) {
     try {
-        const response = await fetch(`${API_URL}/books/${bookId}`);
-        const book = await response.json();
-        displayBookDetails(book);
+        const response = await fetch(`${API_URL}/movies/${movieId}`);
+        const movie = await response.json();
+        displayMovieDetails(movie);
     } catch (error) {
-        console.error('Error fetching book details:', error);
+        console.error('Error fetching movie details:', error);
     }
 }
 
-function displayBookDetails(book) {
-    const detailsSection = document.getElementById('book-details');
+function displayMovieDetails(movie) {
+    const detailsSection = document.getElementById('movie-details');
     detailsSection.innerHTML = `
-        <h2>${book.title}</h2>
-        <p><strong>Author:</strong> ${book.author}</p>
-        <p><strong>Publisher:</strong> ${book.publisher}</p>
-        <p><strong>Year:</strong> ${book.year}</p>
-        <p><strong>Pages:</strong> ${book.pages}</p>
+        <h2>${movie.title}</h2>
+        <p><strong>Director:</strong> ${movie.director}</p>
+        <p><strong>Year:</strong> ${movie.year}</p>
+        <p><strong>Genre:</strong> ${movie.genre}</p>
+        <p><strong>Duration:</strong> ${movie.duration} minutes</p>
     `;
 }
 
-function setupCreateBookForm() {
-    const form = document.getElementById('create-book-form');
+function setupCreateMovieForm() {
+    const form = document.getElementById('create-movie-form');
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(form);
-        const bookData = Object.fromEntries(formData.entries());
+        const movieData = Object.fromEntries(formData.entries());
 
         try {
-            const response = await fetch(`${API_URL}/books`, {
+            const response = await fetch(`${API_URL}/movies`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(bookData),
+                body: JSON.stringify(movieData),
             });
 
             if (response.ok) {
-                alert('Book created successfully!');
+                alert('Movie added successfully!');
                 window.location.href = 'index.html';
             } else {
-                throw new Error('Failed to create book');
+                throw new Error('Failed to add movie');
             }
         } catch (error) {
-            console.error('Error creating book:', error);
-            alert('Failed to create book. Please try again.');
+            console.error('Error adding movie:', error);
+            alert('Failed to add movie. Please try again.');
         }
     });
 }
