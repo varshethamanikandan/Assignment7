@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Details</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Recipe Details</h1>
+    <button onclick="location.href='index.html'">Back to Recipe List</button>
+  </header>
+  <main id="recipe-detail">
+    <!-- Recipe details will be injected here -->
+  </main>
+  <script src="scripts.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const recipeId = urlParams.get('id');
+    fetchRecipeDetails(recipeId); // Fetch recipe details when the page loads
+  </script>
+</body>
+</html>

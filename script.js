@@ -1,41 +1,63 @@
-// const API_URL = 'https://myrecipes-api.free.beeceptor.com';
+const apiUrl = 'https://ownrecipes-api.free.beeceptor.com';
 
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('create-recipe-form');
+// Fetch all recipes and display on homepage
+function fetchRecipes() {
+  fetch(`${apiUrl}/recipes`)
+    .then(response => response.json())
+    .then(data => {
+      const recipeList = document.getElementById('recipe-list');
+      data.forEach(recipe => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="recipe.html?id=${recipe.id}">${recipe.name}</a>`;
+        recipeList.appendChild(li);
+      });
+    })
+    .catch(error => console.error('Error fetching recipes:', error));
+}
 
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();  // Prevent default form submission (page reload)
+// Fetch recipe details and display on detail page
+function fetchRecipeDetails(id) {
+  fetch(`${apiUrl}/recipes/${id}`)
+    .then(response => response.json())
+    .then(recipe => {
+      const detail = document.getElementById('recipe-detail');
+      detail.innerHTML = `
+        <h2>${recipe.name}</h2>
+        <p><strong>Ingredients:</strong> ${recipe.ingredients.join(', ')}</p>
+        <p><strong>Instructions:</strong> ${recipe.instructions}</p>
+        <p><strong>Prep Time:</strong> ${recipe.prepTime}</p>
+        <p><strong>Cook Time:</strong> ${recipe.cookTime}</p>
+        <p><strong>Tags:</strong> ${recipe.tags.join(', ')}</p>
+      `;
+    })
+    .catch(error => console.error('Error fetching recipe details:', error));
+}
 
-        // Gather the form data
-        const newRecipe = {
-            title: document.getElementById('title').value,
-            chef: document.getElementById('chef').value,
-            cuisine: document.getElementById('cuisine').value,
-            prepTime: document.getElementById('prepTime').value,
-            cookTime: document.getElementById('cookTime').value,
-            ingredients: document.getElementById('ingredients').value.split(','),
-            instructions: document.getElementById('instructions').value.split('\n'),
-            servings: document.getElementById('servings').value,
-            difficulty: document.getElementById('difficulty').value
-        };
+// Handle form submission to create a new recipe
+document.getElementById('create-recipe-form')?.addEventListener('submit', event => {
+  event.preventDefault();
 
-        // Send the new recipe to the API via POST request
-        fetch('https://myyrecipes-api.free.beeceptor.com', {  // Replace with your API URL
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newRecipe)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Recipe added successfully:', data);
-            // Optionally redirect to the homepage to show the new recipe
-            window.location.href = 'index.html';  // Redirect to the homepage
-        })
-        .catch(error => {
-            console.error('Error adding recipe:', error);
-            alert('There was an error adding the recipe.');
-        });
-    });
+  const formData = new FormData(event.target);
+  const recipeData = {
+    name: formData.get('name'),
+    ingredients: formData.get('ingredients').split(',').map(ing => ing.trim()),
+    instructions: formData.get('instructions'),
+    prepTime: formData.get('prepTime'),
+    cookTime: formData.get('cookTime'),
+    tags: formData.get('tags').split(',').map(tag => tag.trim())
+  };
+
+  fetch(`${apiUrl}/recipes`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(recipeData)
+  })
+    .then(response => response.json())
+    .then(data => {
+      alert('Recipe created successfully!');
+      window.location.href = 'index.html';
+    })
+    .catch(error => console.error('Error creating recipe:', error));
 });

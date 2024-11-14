@@ -1,25 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipe Database</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe List</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Recipe Database</h1>
-    </header>
-    <main>
-        <section id="recipe-list">
-            <h2>Available Recipes</h2>
-            <ul id="recipes"></ul>
-        </section>
-        <a href="create-recipe.html" class="button">Add New Recipe</a>
-    </main>
-    <script src="script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', fetchRecipes);
-    </script>
+  <header>
+    <h1>Recipe List</h1>
+    <button onclick="location.href='create-recipe.html'">Create New Recipe</button>
+  </header>
+  <main>
+    <ul id="recipe-list"></ul>
+  </main>
+  <script src="scripts.js"></script>
+  <script>
+    fetchRecipes(); // Fetch recipes when the page loads
+  </script>
 </body>
 </html>
