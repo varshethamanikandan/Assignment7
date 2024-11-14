@@ -49,7 +49,44 @@
     </main>
     <script src="script.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', setupCreateRecipeForm);
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('create-recipe-form');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                // Gather form data
+                const newRecipe = {
+                    title: document.getElementById('title').value,
+                    chef: document.getElementById('chef').value,
+                    cuisine: document.getElementById('cuisine').value,
+                    prepTime: document.getElementById('prepTime').value,
+                    cookTime: document.getElementById('cookTime').value,
+                    ingredients: document.getElementById('ingredients').value.split(','),
+                    instructions: document.getElementById('instructions').value.split('\n'),
+                    servings: document.getElementById('servings').value,
+                    difficulty: document.getElementById('difficulty').value
+                };
+
+                // Send POST request to API
+                fetch('https://your-api-url.com/recipes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newRecipe)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Recipe added:', data);
+                    window.location.href = 'index.html';  // Redirect to homepage after adding
+                })
+                .catch(error => {
+                    console.error('Error adding recipe:', error);
+                    alert('There was an error adding the recipe.');
+                });
+            });
+        });
     </script>
 </body>
 </html>

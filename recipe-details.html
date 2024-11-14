@@ -20,7 +20,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const recipeId = urlParams.get('id');
             if (recipe) {
-                fetchRecipeDetails(recipes);
+                fetchRecipeDetails(recipe);
             }
         });
     </script>
