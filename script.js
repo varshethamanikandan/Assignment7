@@ -22,7 +22,7 @@ function displayRecipes(recipes) {
 
 async function fetchRecipeDetails(recipeId) {
     try {
-        const response = await fetch(`${API_URL}/recipes/${recipeId}`);
+        const response = await fetch(`${API_URL}/recipes/:id/${recipeId}`);
         const recipe = await response.json();
         displayRecipeDetails(recipe);
     } catch (error) {
