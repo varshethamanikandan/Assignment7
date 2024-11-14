@@ -9,14 +9,21 @@
 <body>
   <header>
     <h1>Recipe List</h1>
-    <button onclick="location.href='create-recipe.html'">Create New Recipe</button>
   </header>
-  <main>
-    <ul id="recipe-list"></ul>
-  </main>
+
+  <!-- List of recipes -->
+  <section>
+    <ul id="recipe-list">
+      <!-- Recipe items will be dynamically inserted here by scripts.js -->
+    </ul>
+  </section>
+
+  <!-- Button to create a new recipe -->
+  <section>
+    <button onclick="window.location.href='create-recipe.html'">Create a New Recipe</button>
+  </section>
+
+  <!-- JavaScript file to fetch and display recipes -->
   <script src="scripts.js"></script>
-  <script>
-    fetchRecipes(); // Fetch recipes when the page loads
-  </script>
 </body>
 </html>

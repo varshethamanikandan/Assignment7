@@ -1,31 +1,43 @@
-function loadRecipesFromLocalStorage() {
-  const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
-  displayRecipes(recipes);
+const apiUrl = 'https://ownrecipes-api.free.beeceptor.com'; // Replace with your Beeceptor URL
+
+// Function to fetch recipes from Beeceptor or fallback to local storage
+function fetchRecipes() {
+  fetch(apiUrl)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Beeceptor fetch failed');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // If Beeceptor returned data, save it to local storage for persistence
+      localStorage.setItem('recipes', JSON.stringify(data));
+      displayRecipes(data);
+    })
+    .catch(error => {
+      console.error('Error fetching from Beeceptor, using local storage:', error);
+      // Fallback: Load from local storage if Beeceptor is unavailable
+      const localRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
+      displayRecipes(localRecipes);
+    });
 }
 
-// Function to save a new recipe to local storage
-function saveRecipeToLocalStorage(recipe) {
-  const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
-  recipes.push(recipe);
-  localStorage.setItem('recipes', JSON.stringify(recipes));
-}
-
-// Display recipes on the homepage
+// Function to display recipes on the homepage
 function displayRecipes(recipes) {
   const recipeList = document.getElementById('recipe-list');
-  recipeList.innerHTML = ''; // Clear existing items
+  recipeList.innerHTML = ''; // Clear any existing items
   recipes.forEach(recipe => {
     const li = document.createElement('li');
-    li.innerHTML =` <a href="recipe.html?id=${recipe.id}">${recipe.name}</a>`;
+    li.innerHTML = `<a href="recipe.html?id=${recipe.id}">${recipe.name}</a>`;
     recipeList.appendChild(li);
   });
 }
 
-// Handle form submission for creating a new recipe
+// Handle form submission to create a new recipe
 function createRecipe(event) {
   event.preventDefault();
   
-  // Get recipe data from form inputs
+  // Collect recipe data from the form inputs
   const name = document.getElementById('recipe-name').value;
   const ingredients = document.getElementById('recipe-ingredients').value.split(',');
   const instructions = document.getElementById('recipe-instructions').value;
@@ -34,7 +46,7 @@ function createRecipe(event) {
   const tags = document.getElementById('recipe-tags').value.split(',');
 
   const newRecipe = {
-    id: Date.now().toString(), // Unique ID for each recipe
+    id: Date.now().toString(), // Generate a unique ID
     name,
     ingredients,
     instructions,
@@ -43,22 +55,45 @@ function createRecipe(event) {
     tags
   };
 
-  // Save the new recipe to local storage
-  saveRecipeToLocalStorage(newRecipe);
+  // Send the new recipe to Beeceptor with a POST request
+  fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(newRecipe)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Beeceptor post failed');
+    }
+    return response.json();
+  })
+  .then(data => {
+    alert('Recipe added successfully!');
 
-  // Directly add the new recipe to the list displayed on the homepage
-  const recipeList = document.getElementById('recipe-list');
-  const li = document.createElement('li');
-  li.innerHTML = `<a href="recipe.html?id=${newRecipe.id}">${newRecipe.name}</a>`;
-  recipeList.appendChild(li);
+    // Update local storage with the new recipe
+    const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+    recipes.push(newRecipe);
+    localStorage.setItem('recipes', JSON.stringify(recipes));
 
-  alert('Recipe added successfully!');
-  
-  // Optionally, reset the form after submission
-  document.getElementById('create-recipe-form').reset();
+    // Redirect to homepage to see the updated list
+    window.location.href = 'index.html';
+  })
+  .catch(error => {
+    console.error('Error adding recipe to Beeceptor:', error);
+
+    // Fallback: Directly update local storage if Beeceptor fails
+    const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+    recipes.push(newRecipe);
+    localStorage.setItem('recipes', JSON.stringify(recipes));
+    
+    alert('Recipe added locally.');
+    window.location.href = 'index.html';
+  });
 }
 
-// Call loadRecipesFromLocalStorage() to populate the list when the page loads
+// Call fetchRecipes() on page load to populate the list
 window.onload = function() {
-  loadRecipesFromLocalStorage();
+  fetchRecipes();
 };
