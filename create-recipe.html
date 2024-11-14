@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Recipe</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Add New Recipe</h1>
+    </header>
+    <main>
+        <form id="create-recipe-form">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="chef">Chef:</label>
+            <input type="text" id="chef" name="chef" required>
+
+            <label for="cuisine">Cuisine:</label>
+            <input type="text" id="cuisine" name="cuisine" required>
+
+            <label for="prepTime">Preparation Time (minutes):</label>
+            <input type="number" id="prepTime" name="prepTime" required min="1">
+
+            <label for="cookTime">Cooking Time (minutes):</label>
+            <input type="number" id="cookTime" name="cookTime" required min="1">
+
+            <label for="ingredients">Ingredients (comma-separated):</label>
+            <textarea id="ingredients" name="ingredients" required></textarea>
+
+            <label for="instructions">Instructions (separate steps with newlines):</label>
+            <textarea id="instructions" name="instructions" required></textarea>
+
+            <label for="servings">Servings:</label>
+            <input type="number" id="servings" name="servings" required min="1">
+
+            <label for="difficulty">Difficulty:</label>
+            <select id="difficulty" name="difficulty" required>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
+
+            <button type="submit">Add Recipe</button>
+        </form>
+        <a href="index.html" class="button">Back to List</a>
+    </main>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', setupCreateRecipeForm);
+    </script>
+</body>
+</html>
