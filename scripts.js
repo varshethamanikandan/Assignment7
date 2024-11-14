@@ -9,7 +9,7 @@ function fetchRecipes() {
         recipeList.innerHTML = ''; // Clear existing items
         data.forEach(recipe => {
           const li = document.createElement('li');
-          li.innerHTML = <a href="recipe.html?id=${recipe.id}">${recipe.name}</a>;
+          li.innerHTML =`<a href="recipe.html?id=${recipe.id}">${recipe.name}</a>`;
           recipeList.appendChild(li);
         });
       })
