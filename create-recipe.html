@@ -12,15 +12,15 @@
     <button onclick="location.href='index.html'">Back to Recipe List</button>
   </header>
   <main>
-    <form id="create-recipe-form">
-      <label>Name: <input type="text" name="name" required></label>
-      <label>Ingredients: <textarea name="ingredients" required></textarea></label>
-      <label>Instructions: <textarea name="instructions" required></textarea></label>
-      <label>Prep Time: <input type="text" name="prepTime" required></label>
-      <label>Cook Time: <input type="text" name="cookTime" required></label>
-      <label>Tags: <input type="text" name="tags" placeholder="Comma separated tags"></label>
-      <button type="submit">Create Recipe</button>
-    </form>
+    <form id="create-recipe-form" onsubmit="createRecipe(event)">
+        <input type="text" id="recipe-name" placeholder="Recipe Name" required />
+        <input type="text" id="recipe-ingredients" placeholder="Ingredients (comma-separated)" required />
+        <textarea id="recipe-instructions" placeholder="Instructions" required></textarea>
+        <input type="text" id="recipe-prep-time" placeholder="Prep Time" required />
+        <input type="text" id="recipe-cook-time" placeholder="Cook Time" required />
+        <input type="text" id="recipe-tags" placeholder="Tags (comma-separated)" />
+        <button type="submit">Add Recipe</button>
+      </form>
   </main>
   <script src="scripts.js"></script>
 </body>
