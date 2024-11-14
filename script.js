@@ -81,7 +81,7 @@
 //         }
 //     });
 // }
-const API_URL = 'https://myrecipes-api.free.beeceptor.com';
+const API_URL = 'https://myyrecipes-api.free.beeceptor.com';
 
 async function fetchRecipes() {
     try {
@@ -105,7 +105,7 @@ function displayRecipes(recipes) {
 
 async function fetchRecipeDetails(recipeId) {
     try {
-        const response = await fetch(`${API_URL}/recipes/${recipeId}`);  // Fixed the URL
+        const response = await fetch(`${API_URL}/recipes/${recipeId}`);  
         const recipe = await response.json();
         displayRecipeDetails(recipe);
     } catch (error) {
