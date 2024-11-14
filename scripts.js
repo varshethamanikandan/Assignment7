@@ -52,11 +52,11 @@ function createRecipe(event) {
   .then(response => response.json())
   .then(data => {
     alert('Recipe added successfully!');
-    // Now add the new recipe directly to the list displayed on the page
-    // Display it on the homepage immediately after adding
+    
+    // Directly add the new recipe to the list on the homepage
     const recipeList = document.getElementById('recipe-list');
     const li = document.createElement('li');
-    li.innerHTML = `<a href="recipe.html?id=${data.id}">${data.name}</a>`;  // Update this to match how your API returns data
+    li.innerHTML = `<a href="recipe.html?id=${data.id}">${data.name}</a>`;  // Update as needed to reflect how your API returns data
     recipeList.appendChild(li);
     
     // Optionally, reset the form after submission
