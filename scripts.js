@@ -1,37 +1,24 @@
 const apiUrl = 'https://myownrecipe.free.beeceptor.com'; 
 
-// Fetch all recipes and display on homepage
+// Fetch and display recipes
 function fetchRecipes() {
   fetch(`${apiUrl}/recipes`)
     .then(response => response.json())
-    .then(data => {
-      const recipeList = document.getElementById('recipe-list');
-      data.forEach(recipe => {
-        const li = document.createElement('li');
-        li.innerHTML = `<a href="recipe.html?id=${recipe.id}">${recipe.name}</a>`;
-        recipeList.appendChild(li);
-      });
-    })
+    .then(data => displayRecipes(data))
     .catch(error => console.error('Error fetching recipes:', error));
 }
 
-// Fetch recipe details and display on detail page
-function fetchRecipeDetails(id) {
-  fetch(`${apiUrl}/recipes/${id}`)
-    .then(response => response.json())
-    .then(recipe => {
-      const detail = document.getElementById('recipe-detail');
-      detail.innerHTML = `
-        <h2>${recipe.name}</h2>
-        <p><strong>Ingredients:</strong> ${recipe.ingredients.join(', ')}</p>
-        <p><strong>Instructions:</strong> ${recipe.instructions}</p>
-        <p><strong>Prep Time:</strong> ${recipe.prepTime}</p>
-        <p><strong>Cook Time:</strong> ${recipe.cookTime}</p>
-        <p><strong>Tags:</strong> ${recipe.tags.join(', ')}</p>
-      `;
-    })
-    .catch(error => console.error('Error fetching recipe details:', error));
+// Display recipes on the homepage
+function displayRecipes(recipes) {
+  const recipeList = document.getElementById('recipe-list');
+  recipeList.innerHTML = ''; // Clear existing items
+  recipes.forEach(recipe => {
+    const li = document.createElement('li');
+    li.innerHTML =` <a href="recipe.html?id=${recipe.id}">${recipe.name}</a>`;
+    recipeList.appendChild(li);
+  });
 }
+
 
 // Function to fetch recipes from Beeceptor or fallback to local storage
 function fetchRecipes() {
