@@ -11,13 +11,12 @@ header {
     margin-bottom: 1rem;
 }
 
-h1, h2 {
+h1, h2, h3 {
     color: #333;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
+ul, ol {
+    padding-left: 20px;
 }
 
 li {
@@ -43,13 +42,13 @@ form {
     margin: 0 auto;
 }
 
-label, input {
+label, input, textarea, select {
     display: block;
     margin-bottom: 10px;
+    width: 100%;
 }
 
-input {
-    width: 100%;
+input, textarea, select {
     padding: 5px;
 }
 
