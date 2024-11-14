@@ -2,18 +2,19 @@ const apiUrl = 'https://ownrecipes-api.free.beeceptor.com';
 
 // Fetch all recipes and display on homepage
 function fetchRecipes() {
-  fetch(`${apiUrl}/recipes`)
-    .then(response => response.json())
-    .then(data => {
-      const recipeList = document.getElementById('recipe-list');
-      data.forEach(recipe => {
-        const li = document.createElement('li');
-        li.innerHTML = `<a href="recipe.html?id=${recipe.id}">${recipe.name}</a>`;
-        recipeList.appendChild(li);
-      });
-    })
-    .catch(error => console.error('Error fetching recipes:', error));
-}
+    fetch(${apiUrl}/recipes)
+      .then(response => response.json())
+      .then(data => {
+        const recipeList = document.getElementById('recipe-list');
+        recipeList.innerHTML = ''; // Clear existing items
+        data.forEach(recipe => {
+          const li = document.createElement('li');
+          li.innerHTML = <a href="recipe.html?id=${recipe.id}">${recipe.name}</a>;
+          recipeList.appendChild(li);
+        });
+      })
+      .catch(error => console.error('Error fetching recipes:', error));
+  }
 
 // Fetch recipe details and display on detail page
 function fetchRecipeDetails(id) {
