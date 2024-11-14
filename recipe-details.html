@@ -19,8 +19,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const recipeId = urlParams.get('id');
-            if (recipeId) {
-                fetchRecipeDetails(recipeId);
+            if (recipe) {
+                fetchRecipeDetails(recipe);
             }
         });
     </script>

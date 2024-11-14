@@ -105,7 +105,7 @@ function displayRecipes(recipes) {
 
 async function fetchRecipeDetails(recipeId) {
     try {
-        const response = await fetch(`${API_URL}/recipes/${recipeId}`);  
+        const response = await fetch(`${API_URL}/recipes/${recipe}`);  
         const recipe = await response.json();
         displayRecipeDetails(recipe);
     } catch (error) {
