@@ -2,7 +2,7 @@ const apiUrl = 'https://ownrecipes-api.free.beeceptor.com';
 
 // Fetch all recipes and display on homepage
 function fetchRecipes() {
-    fetch(${apiUrl}/recipes)
+    fetch(`${apiUrl}/recipes`)
       .then(response => response.json())
       .then(data => {
         const recipeList = document.getElementById('recipe-list');
