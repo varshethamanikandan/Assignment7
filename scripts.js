@@ -1,4 +1,4 @@
-const apiUrl = 'https://recipesown.free.beeceptor.com/recipe'; // Use the correct endpoint
+const apiUrl = 'https://recipesown.free.beeceptor.com/recipe'; // Corrected endpoint
 
 // Function to fetch recipes from Beeceptor or fallback to local storage
 function fetchRecipes() {
