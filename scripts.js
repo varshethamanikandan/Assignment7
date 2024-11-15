@@ -1,105 +1,87 @@
-const apiUrl = "https://recipeown.free.beeceptor.com "; // Replace with your Beeceptor URL
+const apiUrl = 'https://recipeown.free.beeceptor.com/recipe'; // Corrected endpoint
 
 // Function to fetch recipes from Beeceptor or fallback to local storage
 function fetchRecipes() {
   fetch(apiUrl)
-    .then((response) => {
+    .then(response => {
+      console.log('Response status:', response.status);
       if (!response.ok) {
-        throw new Error("Beeceptor fetch failed");
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return response.json();
+      return response.json(); // Parse the response as JSON
     })
-    .then((data) => {
-      // If Beeceptor returned data, save it to local storage for persistence
-      // localStorage.setItem("recipes", JSON.stringify(data));
-      console.log({ data });
+    .then(data => {
+      console.log('Fetched recipes:', data);
+      // Save to local storage for fallback use
+      localStorage.setItem('recipes', JSON.stringify(data));
+      // Display recipes
       displayRecipes(data);
     })
-    .catch((error) => {
-      console.error(
-        "Error fetching from Beeceptor, using local storage:",
-        error,
-      );
+    .catch(error => {
+      console.error('Error fetching recipes:', error);
       // Fallback: Load from local storage if Beeceptor is unavailable
-      // const localRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
-      // displayRecipes(localRecipes);
+      const localRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
+      displayRecipes(localRecipes);
     });
 }
 
 // Function to display recipes on the homepage
 function displayRecipes(recipes) {
-  const recipeList = document.getElementById("recipe-list");
-  recipeList.innerHTML = ""; // Clear any existing items
-  recipes.forEach((recipe) => {
-    const li = document.createElement("li");
+  const recipeList = document.getElementById('recipes'); // Corrected ID
+  if (!recipeList) {
+    console.error('Recipe list element not found');
+    return;
+  }
+  recipeList.innerHTML = ''; // Clear any existing items
+  recipes.forEach(recipe => {
+    const li = document.createElement('li');
     li.innerHTML = `<a href="recipe.html?id=${recipe.id}">${recipe.name}</a>`;
     recipeList.appendChild(li);
   });
 }
 
-// Handle form submission to create a new recipe
-function createRecipe(event) {
-  event.preventDefault();
+// Function to fetch and display recipe details
+function fetchRecipeDetails(recipeId) {
+  const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+  const recipe = recipes.find(r => r.id === recipeId);
 
-  // Collect recipe data from the form inputs
-  const name = document.getElementById("recipe-name").value;
-  const ingredients = document
-    .getElementById("recipe-ingredients")
-    .value.split(",");
-  const instructions = document.getElementById("recipe-instructions").value;
-  const prepTime = document.getElementById("recipe-prep-time").value;
-  const cookTime = document.getElementById("recipe-cook-time").value;
-  const tags = document.getElementById("recipe-tags").value.split(",");
-
-  const newRecipe = {
-    id: Date.now().toString(), // Generate a unique ID
-    name,
-    ingredients,
-    instructions,
-    prepTime,
-    cookTime,
-    tags,
-  };
-
-  // Send the new recipe to Beeceptor with a POST request
-  fetch(apiUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(newRecipe),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Beeceptor post failed");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      alert("Recipe added successfully!");
-
-      // Update local storage with the new recipe
-      const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-      recipes.push(newRecipe);
-      localStorage.setItem("recipes", JSON.stringify(recipes));
-
-      // Redirect to homepage to see the updated list
-      window.location.href = "index.html";
-    })
-    .catch((error) => {
-      console.error("Error adding recipe to Beeceptor:", error);
-
-      // Fallback: Directly update local storage if Beeceptor fails
-      const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-      recipes.push(newRecipe);
-      localStorage.setItem("recipes", JSON.stringify(recipes));
-
-      alert("Recipe added locally.");
-      window.location.href = "index.html";
-    });
+  if (recipe) {
+    displayRecipeDetails(recipe);
+  } else {
+    console.error('Recipe not found in local storage');
+    document.getElementById('recipe-detail').innerHTML = '<p>Recipe not found</p>';
+  }
 }
 
-// Call fetchRecipes() on page load to populate the list
-window.onload = function () {
-  fetchRecipes();
+// Function to display recipe details
+function displayRecipeDetails(recipe) {
+  const detailElement = document.getElementById('recipe-detail');
+  if (!detailElement) {
+    console.error('Recipe detail element not found');
+    return;
+  }
+
+  detailElement.innerHTML = `
+    <h2>${recipe.name}</h2>
+    <p><strong>Prep Time:</strong> ${recipe.prepTime}</p>
+    <p><strong>Cook Time:</strong> ${recipe.cookTime}</p>
+    <h3>Ingredients:</h3>
+    <ul>${recipe.ingredients.map(ing => `<li>${ing}</li>`).join('')}</ul>
+    <h3>Instructions:</h3>
+    <p>${recipe.instructions}</p>
+    <p><strong>Tags:</strong> ${recipe.tags.join(', ')}</p>
+  `;
+}
+
+// Call appropriate function on page load
+window.onload = function() {
+  if (document.getElementById('recipes')) {
+    fetchRecipes();
+  } else if (document.getElementById('recipe-detail')) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const recipeId = urlParams.get('id');
+    if (recipeId) {
+      fetchRecipeDetails(recipeId);
+    }
+  }
 };
