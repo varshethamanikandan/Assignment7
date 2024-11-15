@@ -1,4 +1,4 @@
-const apiUrl = "https://ca9bc1b245b583040ee6.free.beeceptor.com/api/recipes/"; // Replace with your Beeceptor URL
+const apiUrl = "https://recipesown.free.beeceptor.com/recipe"; // Replace with your Beeceptor URL
 
 // Function to fetch recipes from Beeceptor or fallback to local storage
 function fetchRecipes() {
