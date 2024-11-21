@@ -1,103 +1,105 @@
-
-const apiUrl = 'https://premaderecipe.free.beeceptor.com/recipe'; // Beeceptor endpoint
+const apiUrl = "https://premaderecipe.free.beeceptor.com"; // Replace with your Beeceptor URL
 
 // Function to fetch recipes from Beeceptor or fallback to local storage
 function fetchRecipes() {
   fetch(apiUrl)
-    .then(response => {
-      console.log('Response status:', response.status);
+    .then((response) => {
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error("Beeceptor fetch failed");
       }
-      return response.json(); // Parse the response as JSON
+      return response.json();
     })
-    .then(data => {
-      console.log('Fetched recipes:', data);
-      // Save to local storage for fallback use
-      localStorage.setItem('recipes', JSON.stringify(data));
-      // Display recipes
+    .then((data) => {
+      // If Beeceptor returned data, save it to local storage for persistence
+      // localStorage.setItem("recipes", JSON.stringify(data));
+      console.log({ data });
       displayRecipes(data);
     })
-    .catch(error => {
-      console.error('Error fetching recipes:', error);
+    .catch((error) => {
+      console.error(
+        "Error fetching from Beeceptor, using local storage:",
+        error,
+      );
       // Fallback: Load from local storage if Beeceptor is unavailable
-      const fallbackRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
-      displayRecipes(fallbackRecipes);
+      // const localRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
+      // displayRecipes(localRecipes);
     });
 }
 
 // Function to display recipes on the homepage
 function displayRecipes(recipes) {
-  const recipeList = document.getElementById('recipes'); // Corrected ID
-  if (!recipeList) {
-    console.error('Recipe list element not found');
-    return;
-  }
-  recipeList.innerHTML = ''; // Clear any existing items
-  recipes.forEach(recipe => {
-    const li = document.createElement('li');
+  const recipeList = document.getElementById("recipe-list");
+  recipeList.innerHTML = ""; // Clear any existing items
+  recipes.forEach((recipe) => {
+    const li = document.createElement("li");
     li.innerHTML = `<a href="recipe.html?id=${recipe.id}">${recipe.name}</a>`;
     recipeList.appendChild(li);
   });
 }
 
-// Function to fetch and display recipe details
-function fetchRecipeDetails(recipeId) {
-  const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
-  const recipe = recipes.find(r => r.id === recipeId);
+// Handle form submission to create a new recipe
+function createRecipe(event) {
+  event.preventDefault();
 
-  if (recipe) {
-    displayRecipeDetails(recipe);
-  } else {
-    console.error('Recipe not found in local storage');
-    document.getElementById('recipe-detail').innerHTML = '<p>Recipe not found</p>';
-  }
+  // Collect recipe data from the form inputs
+  const name = document.getElementById("recipe-name").value;
+  const ingredients = document
+    .getElementById("recipe-ingredients")
+    .value.split(",");
+  const instructions = document.getElementById("recipe-instructions").value;
+  const prepTime = document.getElementById("recipe-prep-time").value;
+  const cookTime = document.getElementById("recipe-cook-time").value;
+  const tags = document.getElementById("recipe-tags").value.split(",");
+
+  const newRecipe = {
+    id: Date.now().toString(), // Generate a unique ID
+    name,
+    ingredients,
+    instructions,
+    prepTime,
+    cookTime,
+    tags,
+  };
+
+  // Send the new recipe to Beeceptor with a POST request
+  fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newRecipe),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Beeceptor post failed");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      alert("Recipe added successfully!");
+
+      // Update local storage with the new recipe
+      const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+      recipes.push(newRecipe);
+      localStorage.setItem("recipes", JSON.stringify(recipes));
+
+      // Redirect to homepage to see the updated list
+      window.location.href = "index.html";
+    })
+    .catch((error) => {
+      console.error("Error adding recipe to Beeceptor:", error);
+
+      // Fallback: Directly update local storage if Beeceptor fails
+      const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+      recipes.push(newRecipe);
+      localStorage.setItem("recipes", JSON.stringify(recipes));
+
+      alert("Recipe added locally.");
+      window.location.href = "index.html";
+    });
 }
 
-// Function to display recipe details
-function displayRecipeDetails(recipe) {
-  const detailElement = document.getElementById('recipe-detail');
-  if (!detailElement) {
-    console.error('Recipe detail element not found');
-    return;
-  }
-
-  detailElement.innerHTML = `
-    <h2>${recipe.name}</h2>
-    <p><strong>Prep Time:</strong> ${recipe.prepTime}</p>
-    <p><strong>Cook Time:</strong> ${recipe.cookTime}</p>
-    <h3>Ingredients:</h3>
-    <ul>${recipe.ingredients.map(ing => `<li>${ing}</li>`).join('')}</ul>
-    <h3>Instructions:</h3>
-    <p>${recipe.instructions}</p>
-    <p><strong>Tags:</strong> ${recipe.tags.join(', ')}</p>
-  `;
-}
-
-// Simulate Beeceptor response for local testing
-const mockRecipes = [
-  { "id": "1", "name": "Mock Spaghetti", "prepTime": "10 mins", "cookTime": "20 mins", "ingredients": ["spaghetti", "sauce"], "instructions": "Cook spaghetti", "tags": ["Italian"] },
-  { "id": "2", "name": "Mock Tacos", "prepTime": "5 mins", "cookTime": "15 mins", "ingredients": ["tortilla", "meat"], "instructions": "Prepare tacos", "tags": ["Mexican"] },
-  { "id": "3", "name": "Mock Salad", "prepTime": "5 mins", "cookTime": "0 mins", "ingredients": ["lettuce", "tomatoes", "cucumber"], "instructions": "Mix ingredients", "tags": ["Healthy"] },
-  { "id": "4", "name": "Mock Pizza", "prepTime": "15 mins", "cookTime": "25 mins", "ingredients": ["dough", "cheese", "sauce"], "instructions": "Bake pizza", "tags": ["Italian", "Fast"] },
-  { "id": "5", "name": "Mock Pancakes", "prepTime": "10 mins", "cookTime": "10 mins", "ingredients": ["flour", "eggs", "milk"], "instructions": "Cook pancakes", "tags": ["Breakfast"] },
-  { "id": "6", "name": "Mock Curry", "prepTime": "15 mins", "cookTime": "30 mins", "ingredients": ["spices", "chicken", "onion"], "instructions": "Cook curry", "tags": ["Indian"] },
-  { "id": "7", "name": "Mock Burger", "prepTime": "10 mins", "cookTime": "15 mins", "ingredients": ["buns", "meat", "lettuce"], "instructions": "Assemble burger", "tags": ["Fast Food"] },
-  { "id": "8", "name": "Mock Soup", "prepTime": "10 mins", "cookTime": "20 mins", "ingredients": ["broth", "vegetables"], "instructions": "Boil soup", "tags": ["Healthy"] },
-  { "id": "9", "name": "Mock Sushi", "prepTime": "20 mins", "cookTime": "0 mins", "ingredients": ["rice", "fish"], "instructions": "Roll sushi", "tags": ["Japanese"] },
-  { "id": "10", "name": "Mock Cake", "prepTime": "20 mins", "cookTime": "40 mins", "ingredients": ["flour", "sugar", "eggs"], "instructions": "Bake cake", "tags": ["Dessert"] }
-];
-localStorage.setItem('recipes', JSON.stringify(mockRecipes));
-
-// Call appropriate function on page load
-window.onload = function() {
-  if (document.getElementById('recipes')) {
-    fetchRecipes();
-  } else if (document.getElementById('recipe-detail')) {
-    const urlParams = new URLSearchParams(window.location.search);
-    const recipeId = urlParams.get('id');
-    if (recipeId) {
-      fetchRecipeDetails(recipeId);
-    }
-  }
+// Call fetchRecipes() on page load to populate the list
+window.onload = function () {
+  fetchRecipes();
 };
