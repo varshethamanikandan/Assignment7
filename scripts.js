@@ -20,14 +20,14 @@ function fetchRecipes() {
     .catch(error => {
       console.error('Error fetching recipes:', error);
       // Fallback: Load from local storage if Beeceptor is unavailable
-      const localRecipes = JSON.parse(localStorage.getItem('recipe')) || [];
+      const localRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
       displayRecipes(localRecipes);
     });
 }
 
 // Function to display recipes on the homepage
 function displayRecipes(recipes) {
-  const recipeList = document.getElementById('recipe'); // Corrected ID
+  const recipeList = document.getElementById('recipes'); // Corrected ID
   if (!recipeList) {
     console.error('Recipe list element not found');
     return;
@@ -42,7 +42,7 @@ function displayRecipes(recipes) {
 
 // Function to fetch and display recipe details
 function fetchRecipeDetails(recipeId) {
-  const recipes = JSON.parse(localStorage.getItem('recipe')) || [];
+  const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
   const recipe = recipes.find(r => r.id === recipeId);
 
   if (recipe) {
@@ -75,7 +75,7 @@ function displayRecipeDetails(recipe) {
 
 // Call appropriate function on page load
 window.onload = function() {
-  if (document.getElementById('recipe')) {
+  if (document.getElementById('recipes')) {
     fetchRecipes();
   } else if (document.getElementById('recipe-detail')) {
     const urlParams = new URLSearchParams(window.location.search);
