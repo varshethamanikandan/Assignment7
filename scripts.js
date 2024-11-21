@@ -1,4 +1,5 @@
-const apiUrl = 'https://premaderecipe.free.beeceptor.com/recipe'; // Corrected endpoint
+
+const apiUrl = 'https://premaderecipe.free.beeceptor.com/recipe'; // Beeceptor endpoint
 
 // Function to fetch recipes from Beeceptor or fallback to local storage
 function fetchRecipes() {
@@ -20,8 +21,8 @@ function fetchRecipes() {
     .catch(error => {
       console.error('Error fetching recipes:', error);
       // Fallback: Load from local storage if Beeceptor is unavailable
-      const localRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
-      displayRecipes(localRecipes);
+      const fallbackRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
+      displayRecipes(fallbackRecipes);
     });
 }
 
@@ -72,6 +73,21 @@ function displayRecipeDetails(recipe) {
     <p><strong>Tags:</strong> ${recipe.tags.join(', ')}</p>
   `;
 }
+
+// Simulate Beeceptor response for local testing
+const mockRecipes = [
+  { "id": "1", "name": "Mock Spaghetti", "prepTime": "10 mins", "cookTime": "20 mins", "ingredients": ["spaghetti", "sauce"], "instructions": "Cook spaghetti", "tags": ["Italian"] },
+  { "id": "2", "name": "Mock Tacos", "prepTime": "5 mins", "cookTime": "15 mins", "ingredients": ["tortilla", "meat"], "instructions": "Prepare tacos", "tags": ["Mexican"] },
+  { "id": "3", "name": "Mock Salad", "prepTime": "5 mins", "cookTime": "0 mins", "ingredients": ["lettuce", "tomatoes", "cucumber"], "instructions": "Mix ingredients", "tags": ["Healthy"] },
+  { "id": "4", "name": "Mock Pizza", "prepTime": "15 mins", "cookTime": "25 mins", "ingredients": ["dough", "cheese", "sauce"], "instructions": "Bake pizza", "tags": ["Italian", "Fast"] },
+  { "id": "5", "name": "Mock Pancakes", "prepTime": "10 mins", "cookTime": "10 mins", "ingredients": ["flour", "eggs", "milk"], "instructions": "Cook pancakes", "tags": ["Breakfast"] },
+  { "id": "6", "name": "Mock Curry", "prepTime": "15 mins", "cookTime": "30 mins", "ingredients": ["spices", "chicken", "onion"], "instructions": "Cook curry", "tags": ["Indian"] },
+  { "id": "7", "name": "Mock Burger", "prepTime": "10 mins", "cookTime": "15 mins", "ingredients": ["buns", "meat", "lettuce"], "instructions": "Assemble burger", "tags": ["Fast Food"] },
+  { "id": "8", "name": "Mock Soup", "prepTime": "10 mins", "cookTime": "20 mins", "ingredients": ["broth", "vegetables"], "instructions": "Boil soup", "tags": ["Healthy"] },
+  { "id": "9", "name": "Mock Sushi", "prepTime": "20 mins", "cookTime": "0 mins", "ingredients": ["rice", "fish"], "instructions": "Roll sushi", "tags": ["Japanese"] },
+  { "id": "10", "name": "Mock Cake", "prepTime": "20 mins", "cookTime": "40 mins", "ingredients": ["flour", "sugar", "eggs"], "instructions": "Bake cake", "tags": ["Dessert"] }
+];
+localStorage.setItem('recipes', JSON.stringify(mockRecipes));
 
 // Call appropriate function on page load
 window.onload = function() {
