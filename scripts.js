@@ -30,7 +30,7 @@ function fetchRecipes() {
 
 // Function to display recipes on the homepage
 function displayRecipes(recipes) {
-  const recipeList = document.getElementById("recipe-list");
+  const recipeList = document.getElementById("recipes");
   recipeList.innerHTML = ""; // Clear any existing items
   recipes.forEach((recipe) => {
     const li = document.createElement("li");
