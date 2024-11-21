@@ -1,36 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Recipe</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Recipe</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Create a New Recipe</h1>
-        <button onclick="location.href='index.html'">Back to Recipes</button>
-    </header>
-    <main>
-        <form id="create-recipe-form">
-            <label for="name">Recipe Name:</label>
-            <input type="text" id="name" name="name" required>
-
-            <label for="ingredients">Ingredients (comma-separated):</label>
-            <input type="text" id="ingredients" name="ingredients" required>
-
-            <label for="steps">Steps:</label>
-            <textarea id="steps" name="steps" required></textarea>
-
-            <label for="servings">Servings:</label>
-            <input type="number" id="servings" name="servings" required>
-
-            <label for="cuisine">Cuisine:</label>
-            <input type="text" id="cuisine" name="cuisine" required>
-
-            <button type="submit">Create Recipe</button>
-        </form>
-    </main>
-    <script src="scripts.js"></script>
+  <header>
+    <h1>Create a New Recipe</h1>
+    <button onclick="location.href='index.html'">Back to Recipe List</button>
+  </header>
+  <main>
+    <form id="create-recipe-form" onsubmit="createRecipe(event)">
+        <input type="text" id="recipe-name" placeholder="Recipe Name" required />
+        <input type="text" id="recipe-ingredients" placeholder="Ingredients (comma-separated)" required />
+        <textarea id="recipe-instructions" placeholder="Instructions" required></textarea>
+        <input type="text" id="recipe-prep-time" placeholder="Prep Time" required />
+        <input type="text" id="recipe-cook-time" placeholder="Cook Time" required />
+        <input type="text" id="recipe-tags" placeholder="Tags (comma-separated)" />
+        <button type="submit">Add Recipe</button>
+     </form>
+  </main>
+  <script src="scripts.js"></script>
 </body>
 </html>
+
