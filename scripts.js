@@ -1,4 +1,4 @@
-const apiUrl = 'https://recipeown.free.beeceptor.com/recipe'; // Corrected endpoint
+const apiUrl = 'https://premaderecipe.free.beeceptor.com/recipe'; // Corrected endpoint
 
 // Function to fetch recipes from Beeceptor or fallback to local storage
 function fetchRecipes() {
@@ -20,14 +20,14 @@ function fetchRecipes() {
     .catch(error => {
       console.error('Error fetching recipes:', error);
       // Fallback: Load from local storage if Beeceptor is unavailable
-      const localRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
+      const localRecipes = JSON.parse(localStorage.getItem('recipe')) || [];
       displayRecipes(localRecipes);
     });
 }
 
 // Function to display recipes on the homepage
 function displayRecipes(recipes) {
-  const recipeList = document.getElementById('recipes'); // Corrected ID
+  const recipeList = document.getElementById('recipe'); // Corrected ID
   if (!recipeList) {
     console.error('Recipe list element not found');
     return;
@@ -42,7 +42,7 @@ function displayRecipes(recipes) {
 
 // Function to fetch and display recipe details
 function fetchRecipeDetails(recipeId) {
-  const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+  const recipes = JSON.parse(localStorage.getItem('recipe')) || [];
   const recipe = recipes.find(r => r.id === recipeId);
 
   if (recipe) {
@@ -75,7 +75,7 @@ function displayRecipeDetails(recipe) {
 
 // Call appropriate function on page load
 window.onload = function() {
-  if (document.getElementById('recipes')) {
+  if (document.getElementById('recipe')) {
     fetchRecipes();
   } else if (document.getElementById('recipe-detail')) {
     const urlParams = new URLSearchParams(window.location.search);
