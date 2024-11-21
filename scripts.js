@@ -1,5 +1,7 @@
 const apiUrl = "https://premaderecipe.free.beeceptor.com"; // Replace with your Beeceptor URL
 
+
+
 // Function to fetch recipes from Beeceptor or fallback to local storage
 function fetchRecipes() {
   fetch(apiUrl)
@@ -28,7 +30,7 @@ function fetchRecipes() {
 
 // Function to display recipes on the homepage
 function displayRecipes(recipes) {
-  const recipeList = document.getElementById("recipes");
+  const recipeList = document.getElementById("recipe-list");
   recipeList.innerHTML = ""; // Clear any existing items
   recipes.forEach((recipe) => {
     const li = document.createElement("li");
