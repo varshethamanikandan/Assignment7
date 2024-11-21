@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipes</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe List</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Recipe List</h1>
-        <button onclick="location.href='create-recipe.html'">Create a New Recipe</button>
-    </header>
-    <main id="recipe-list">
-        <!-- Recipe items will be dynamically loaded here -->
-    </main>
-    <script src="scripts.js"></script>
+  <header>
+    <h1>Recipe List</h1>
+  </header>
+
+  <!-- List of recipes -->
+  <section>
+    <ul id="recipe-list">
+      <!-- Recipe items will be dynamically inserted here by scripts.js -->
+    </ul>
+  </section>
+
+  <!-- Button to create a new recipe -->
+  <section>
+    <button onclick="window.location.href='create-recipe.html'">Create a New Recipe</button>
+  </section>
+
+  <!-- JavaScript file to fetch and display recipes -->
+  <script src="scripts.js"></script>
 </body>
 </html>

@@ -1,5 +1,4 @@
-const apiUrl = "https://premaderecipe.free.beeceptor.com/recipe-list"; // Replace with your Beeceptor URL
-
+const apiUrl = "https://recipeown.free.beeceptor.com"; // Replace with your Beeceptor URL
 
 
 
