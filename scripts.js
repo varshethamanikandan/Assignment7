@@ -8,14 +8,18 @@ function fetchRecipes() {
       return response.json();
     })
     .then((data) => {
+      console.log({ data });
+      localStorage.setItem("recipes", JSON.stringify(data)); // Save for fallback
       displayRecipes(data);
     })
     .catch((error) => {
-      console.error("Error fetching recipes:", error);
+      console.error("Error fetching from Beeceptor, using local storage:", error);
+      const localRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
+      displayRecipes(localRecipes);
     });
 }
 
-// Function to display recipes
+// Function to display recipes on the homepage
 function displayRecipes(recipes) {
   const recipeList = document.getElementById("recipe-list");
   recipeList.innerHTML = ""; // Clear existing items
@@ -30,7 +34,7 @@ function displayRecipes(recipes) {
   });
 }
 
-// Handle recipe deletion
+// Function to handle recipe deletion
 function deleteRecipe(recipeId) {
   fetch(`${apiUrl}/${recipeId}`, {
     method: "DELETE",
@@ -38,19 +42,51 @@ function deleteRecipe(recipeId) {
     .then((response) => {
       if (!response.ok) throw new Error("Failed to delete recipe");
       alert("Recipe deleted successfully");
-      fetchRecipes(); // Refresh the list
+      const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+      const updatedRecipes = recipes.filter((recipe) => recipe.id !== recipeId);
+      localStorage.setItem("recipes", JSON.stringify(updatedRecipes));
+      fetchRecipes(); // Refresh list
     })
     .catch((error) => {
       console.error("Error deleting recipe:", error);
+      alert("Could not delete recipe. Please try again.");
     });
 }
 
-// Redirect to edit page
+// Function to fetch recipe details
+function fetchRecipeDetails(recipeId) {
+  fetch(`${apiUrl}/${recipeId}`)
+    .then((response) => {
+      if (!response.ok) throw new Error("Failed to fetch recipe details");
+      return response.json();
+    })
+    .then((recipe) => {
+      document.getElementById("recipe-detail").innerHTML = `
+        <h2>${recipe.name}</h2>
+        <p><strong>Ingredients:</strong> ${recipe.ingredients.join(", ")}</p>
+        <p><strong>Instructions:</strong> ${recipe.instructions}</p>
+        <p><strong>Prep Time:</strong> ${recipe.prepTime}</p>
+        <p><strong>Cook Time:</strong> ${recipe.cookTime}</p>
+        <p><strong>Tags:</strong> ${recipe.tags.join(", ")}</p>
+      `;
+    })
+    .catch((error) => {
+      console.error("Error fetching recipe details:", error);
+    });
+}
+
+// Function to pre-fill form for editing
 function editRecipe(recipeId) {
+  const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+  const recipe = recipes.find((r) => r.id === recipeId);
+  if (!recipe) {
+    alert("Recipe not found.");
+    return;
+  }
   window.location.href = `edit-recipe.html?id=${recipeId}`;
 }
 
-// Handle recipe update
+// Function to handle editing a recipe
 function updateRecipe(event) {
   event.preventDefault();
   const recipeId = document.getElementById("recipe-id").value;
@@ -65,43 +101,29 @@ function updateRecipe(event) {
 
   fetch(`${apiUrl}/${recipeId}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(updatedRecipe),
   })
     .then((response) => {
       if (!response.ok) throw new Error("Failed to update recipe");
       alert("Recipe updated successfully");
-      window.location.href = "index.html"; // Redirect to homepage
+
+      const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+      const index = recipes.findIndex((r) => r.id === recipeId);
+      if (index !== -1) {
+        recipes[index] = { id: recipeId, ...updatedRecipe };
+        localStorage.setItem("recipes", JSON.stringify(recipes));
+      }
+
+      window.location.href = `recipe.html?id=${recipeId}`; // Redirect to details page
     })
     .catch((error) => {
       console.error("Error updating recipe:", error);
+      alert("Could not update recipe. Please try again.");
     });
 }
 
-// Fetch and populate recipe data on the Edit page
-function fetchRecipeDetails(recipeId) {
-  fetch(`${apiUrl}/${recipeId}`)
-    .then((response) => {
-      if (!response.ok) throw new Error("Failed to fetch recipe details");
-      return response.json();
-    })
-    .then((recipe) => {
-      document.getElementById("recipe-id").value = recipe.id;
-      document.getElementById("recipe-name").value = recipe.name;
-      document.getElementById("recipe-ingredients").value = recipe.ingredients.join(",");
-      document.getElementById("recipe-instructions").value = recipe.instructions;
-      document.getElementById("recipe-prep-time").value = recipe.prepTime;
-      document.getElementById("recipe-cook-time").value = recipe.cookTime;
-      document.getElementById("recipe-tags").value = recipe.tags.join(",");
-    })
-    .catch((error) => {
-      console.error("Error fetching recipe details:", error);
-    });
-}
-
-// Initialize the app
+// Call fetchRecipes on homepage load
 window.onload = function () {
   if (document.getElementById("recipe-list")) fetchRecipes();
 };

@@ -13,21 +13,31 @@
   </header>
   <main>
     <form id="edit-recipe-form" onsubmit="updateRecipe(event)">
-      <input type="hidden" id="recipe-id" />
-      <input type="text" id="recipe-name" placeholder="Recipe Name" required />
-      <input type="text" id="recipe-ingredients" placeholder="Ingredients (comma-separated)" required />
+      <input type="hidden" id="recipe-id">
+      <input type="text" id="recipe-name" placeholder="Recipe Name" required>
+      <input type="text" id="recipe-ingredients" placeholder="Ingredients (comma-separated)" required>
       <textarea id="recipe-instructions" placeholder="Instructions" required></textarea>
-      <input type="text" id="recipe-prep-time" placeholder="Prep Time" required />
-      <input type="text" id="recipe-cook-time" placeholder="Cook Time" required />
-      <input type="text" id="recipe-tags" placeholder="Tags (comma-separated)" />
+      <input type="text" id="recipe-prep-time" placeholder="Prep Time" required>
+      <input type="text" id="recipe-cook-time" placeholder="Cook Time" required>
+      <input type="text" id="recipe-tags" placeholder="Tags (comma-separated)">
       <button type="submit">Update Recipe</button>
     </form>
   </main>
   <script src="scripts.js"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const recipeId = urlParams.get("id");
-    fetchRecipeDetails(recipeId); // Pre-fill the form with recipe details
+    const recipeId = urlParams.get('id');
+    const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+    const recipe = recipes.find((r) => r.id === recipeId);
+    if (recipe) {
+      document.getElementById("recipe-id").value = recipeId;
+      document.getElementById("recipe-name").value = recipe.name;
+      document.getElementById("recipe-ingredients").value = recipe.ingredients.join(",");
+      document.getElementById("recipe-instructions").value = recipe.instructions;
+      document.getElementById("recipe-prep-time").value = recipe.prepTime;
+      document.getElementById("recipe-cook-time").value = recipe.cookTime;
+      document.getElementById("recipe-tags").value = recipe.tags.join(",");
+    }
   </script>
 </body>
 </html>
