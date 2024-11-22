@@ -1,107 +1,107 @@
 const apiUrl = "https://recipeown.free.beeceptor.com/recipe"; // Replace with your Beeceptor URL
 
-
-
-// Function to fetch recipes from Beeceptor or fallback to local storage
+// Function to fetch recipes
 function fetchRecipes() {
   fetch(apiUrl)
     .then((response) => {
-      if (!response.ok) {
-        throw new Error("Beeceptor fetch failed");
-      }
+      if (!response.ok) throw new Error("Beeceptor fetch failed");
       return response.json();
     })
     .then((data) => {
-      // If Beeceptor returned data, save it to local storage for persistence
-      // localStorage.setItem("recipes", JSON.stringify(data));
-      console.log({ data });
       displayRecipes(data);
     })
     .catch((error) => {
-      console.error(
-        "Error fetching from Beeceptor, using local storage:",
-        error,
-      );
-      // Fallback: Load from local storage if Beeceptor is unavailable
-      // const localRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
-      // displayRecipes(localRecipes);
+      console.error("Error fetching recipes:", error);
     });
 }
 
-// Function to display recipes on the homepage
+// Function to display recipes
 function displayRecipes(recipes) {
   const recipeList = document.getElementById("recipe-list");
-  recipeList.innerHTML = ""; // Clear any existing items
+  recipeList.innerHTML = ""; // Clear existing items
   recipes.forEach((recipe) => {
     const li = document.createElement("li");
-    li.innerHTML = `<a href="recipe.html?id=${recipe.id}">${recipe.name}</a>`;
+    li.innerHTML = `
+      <a href="recipe.html?id=${recipe.id}">${recipe.name}</a>
+      <button onclick="editRecipe('${recipe.id}')">Edit</button>
+      <button onclick="deleteRecipe('${recipe.id}')">Delete</button>
+    `;
     recipeList.appendChild(li);
   });
 }
 
-// Handle form submission to create a new recipe
-function createRecipe(event) {
-  event.preventDefault();
-
-  // Collect recipe data from the form inputs
-  const name = document.getElementById("recipe-name").value;
-  const ingredients = document
-    .getElementById("recipe-ingredients")
-    .value.split(",");
-  const instructions = document.getElementById("recipe-instructions").value;
-  const prepTime = document.getElementById("recipe-prep-time").value;
-  const cookTime = document.getElementById("recipe-cook-time").value;
-  const tags = document.getElementById("recipe-tags").value.split(",");
-
-  const newRecipe = {
-    id: Date.now().toString(), // Generate a unique ID
-    name,
-    ingredients,
-    instructions,
-    prepTime,
-    cookTime,
-    tags,
-  };
-
-  // Send the new recipe to Beeceptor with a POST request
-  fetch(apiUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(newRecipe),
+// Handle recipe deletion
+function deleteRecipe(recipeId) {
+  fetch(`${apiUrl}/${recipeId}`, {
+    method: "DELETE",
   })
     .then((response) => {
-      if (!response.ok) {
-        throw new Error("Beeceptor post failed");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      alert("Recipe added successfully!");
-
-      // Update local storage with the new recipe
-      const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-      recipes.push(newRecipe);
-      localStorage.setItem("recipes", JSON.stringify(recipes));
-
-      // Redirect to homepage to see the updated list
-      window.location.href = "index.html";
+      if (!response.ok) throw new Error("Failed to delete recipe");
+      alert("Recipe deleted successfully");
+      fetchRecipes(); // Refresh the list
     })
     .catch((error) => {
-      console.error("Error adding recipe to Beeceptor:", error);
-
-      // Fallback: Directly update local storage if Beeceptor fails
-      const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-      recipes.push(newRecipe);
-      localStorage.setItem("recipes", JSON.stringify(recipes));
-
-      alert("Recipe added locally.");
-      window.location.href = "index.html";
+      console.error("Error deleting recipe:", error);
     });
 }
 
-// Call fetchRecipes() on page load to populate the list
+// Redirect to edit page
+function editRecipe(recipeId) {
+  window.location.href = `edit-recipe.html?id=${recipeId}`;
+}
+
+// Handle recipe update
+function updateRecipe(event) {
+  event.preventDefault();
+  const recipeId = document.getElementById("recipe-id").value;
+  const updatedRecipe = {
+    name: document.getElementById("recipe-name").value,
+    ingredients: document.getElementById("recipe-ingredients").value.split(","),
+    instructions: document.getElementById("recipe-instructions").value,
+    prepTime: document.getElementById("recipe-prep-time").value,
+    cookTime: document.getElementById("recipe-cook-time").value,
+    tags: document.getElementById("recipe-tags").value.split(","),
+  };
+
+  fetch(`${apiUrl}/${recipeId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedRecipe),
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("Failed to update recipe");
+      alert("Recipe updated successfully");
+      window.location.href = "index.html"; // Redirect to homepage
+    })
+    .catch((error) => {
+      console.error("Error updating recipe:", error);
+    });
+}
+
+// Fetch and populate recipe data on the Edit page
+function fetchRecipeDetails(recipeId) {
+  fetch(`${apiUrl}/${recipeId}`)
+    .then((response) => {
+      if (!response.ok) throw new Error("Failed to fetch recipe details");
+      return response.json();
+    })
+    .then((recipe) => {
+      document.getElementById("recipe-id").value = recipe.id;
+      document.getElementById("recipe-name").value = recipe.name;
+      document.getElementById("recipe-ingredients").value = recipe.ingredients.join(",");
+      document.getElementById("recipe-instructions").value = recipe.instructions;
+      document.getElementById("recipe-prep-time").value = recipe.prepTime;
+      document.getElementById("recipe-cook-time").value = recipe.cookTime;
+      document.getElementById("recipe-tags").value = recipe.tags.join(",");
+    })
+    .catch((error) => {
+      console.error("Error fetching recipe details:", error);
+    });
+}
+
+// Initialize the app
 window.onload = function () {
-  fetchRecipes();
+  if (document.getElementById("recipe-list")) fetchRecipes();
 };

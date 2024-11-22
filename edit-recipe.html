@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Recipe</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Edit Recipe</h1>
+    <button onclick="location.href='index.html'">Back to Recipe List</button>
+  </header>
+  <main>
+    <form id="edit-recipe-form" onsubmit="updateRecipe(event)">
+      <input type="hidden" id="recipe-id" />
+      <input type="text" id="recipe-name" placeholder="Recipe Name" required />
+      <input type="text" id="recipe-ingredients" placeholder="Ingredients (comma-separated)" required />
+      <textarea id="recipe-instructions" placeholder="Instructions" required></textarea>
+      <input type="text" id="recipe-prep-time" placeholder="Prep Time" required />
+      <input type="text" id="recipe-cook-time" placeholder="Cook Time" required />
+      <input type="text" id="recipe-tags" placeholder="Tags (comma-separated)" />
+      <button type="submit">Update Recipe</button>
+    </form>
+  </main>
+  <script src="scripts.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const recipeId = urlParams.get("id");
+    fetchRecipeDetails(recipeId); // Pre-fill the form with recipe details
+  </script>
+</body>
+</html>
