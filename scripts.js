@@ -1,4 +1,4 @@
-const apiUrl = "https://recipeall.free.beeceptor.com"; // Replace with your Beeceptor URL
+const apiUrl = "https://recipeall.free.beeceptor.com/recipe"; // Replace with your Beeceptor URL
 
 // Regular Expression for alphabetic input (only letters, spaces, and commas allowed)
 const alphaRegex = /^[A-Za-z\s,]+$/;
