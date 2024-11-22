@@ -23,7 +23,7 @@ function displayRecipes(recipes) {
   });
 }
 function viewRecipeDetails(recipeId) {
-  window.location.href = `recipe-details.html?id=${recipeId}`;
+  window.location.href = `recipe.html?id=${recipeId}`;
 }
 
 // Function to handle recipe deletion
