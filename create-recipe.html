@@ -12,6 +12,8 @@
     <button onclick="location.href='index.html'">Back to Recipe List</button>
   </header>
   <main>
+    <div id="success-message" style="display:none; color: green; padding: 10px; margin-top: 20px;"></div>
+
     <form id="create-recipe-form" onsubmit="createRecipe(event)">
         <input type="text" id="recipe-name" placeholder="Recipe Name" required />
         <input type="text" id="recipe-ingredients" placeholder="Ingredients (comma-separated)" required />
