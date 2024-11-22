@@ -1,5 +1,8 @@
 const apiUrl = "https://recipeown.free.beeceptor.com/recipe"; // Replace with your Beeceptor URL
 
+// Regular Expression for alphabetic input (only letters, spaces, and commas allowed)
+const alphaRegex = /^[A-Za-z\s,]+$/;
+
 // Function to fetch recipes
 function fetchRecipes() {
   const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
@@ -55,14 +58,38 @@ function editRecipe(recipeId) {
 function addRecipe(event) {
   event.preventDefault();
 
+  // Get input values
+  const recipeName = document.getElementById("recipe-name").value;
+  const ingredients = document.getElementById("recipe-ingredients").value;
+  const instructions = document.getElementById("recipe-instructions").value;
+  const tags = document.getElementById("recipe-tags").value;
+
+  // Validate input fields with regular expressions
+  if (!alphaRegex.test(recipeName)) {
+    alert("Recipe name can only contain alphabets, spaces, and commas.");
+    return;
+  }
+  if (!alphaRegex.test(ingredients)) {
+    alert("Ingredients can only contain alphabets, spaces, and commas.");
+    return;
+  }
+  if (!alphaRegex.test(instructions)) {
+    alert("Instructions can only contain alphabets and spaces.");
+    return;
+  }
+  if (!alphaRegex.test(tags)) {
+    alert("Tags can only contain alphabets, spaces, and commas.");
+    return;
+  }
+
   const newRecipe = {
     id: Date.now().toString(), // Unique ID for the recipe
-    name: document.getElementById("recipe-name").value,
-    ingredients: document.getElementById("recipe-ingredients").value.split(","),
-    instructions: document.getElementById("recipe-instructions").value,
+    name: recipeName,
+    ingredients: ingredients.split(","),
+    instructions: instructions,
     prepTime: document.getElementById("recipe-prep-time").value,
     cookTime: document.getElementById("recipe-cook-time").value,
-    tags: document.getElementById("recipe-tags").value.split(","),
+    tags: tags.split(","),
   };
 
   // Save to localStorage
