@@ -55,24 +55,41 @@ function deleteRecipe(recipeId) {
 
 // Function to fetch recipe details
 function fetchRecipeDetails(recipeId) {
-  fetch(`${apiUrl}/${recipeId}`)
-    .then((response) => {
-      if (!response.ok) throw new Error("Failed to fetch recipe details");
-      return response.json();
-    })
-    .then((recipe) => {
-      document.getElementById("recipe-detail").innerHTML = `
-        <h2>${recipe.name}</h2>
-        <p><strong>Ingredients:</strong> ${recipe.ingredients.join(", ")}</p>
-        <p><strong>Instructions:</strong> ${recipe.instructions}</p>
-        <p><strong>Prep Time:</strong> ${recipe.prepTime}</p>
-        <p><strong>Cook Time:</strong> ${recipe.cookTime}</p>
-        <p><strong>Tags:</strong> ${recipe.tags.join(", ")}</p>
-      `;
-    })
-    .catch((error) => {
-      console.error("Error fetching recipe details:", error);
-    });
+  const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+  const recipe = recipes.find((r) => r.id === recipeId);
+
+  if (recipe) {
+    // If found in localStorage, display details without API call
+    console.log("Loaded from localStorage:", recipe);
+    displayRecipeDetails(recipe);
+  } else {
+    // Fall back to API fetch if not in localStorage
+    console.log("Fetching from API for Recipe ID:", recipeId);
+    fetch(`${apiUrl}/${recipeId}`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch recipe details");
+        return response.json();
+      })
+      .then((recipe) => {
+        displayRecipeDetails(recipe);
+      })
+      .catch((error) => {
+        console.error("Error fetching recipe details:", error);
+        alert("Could not fetch recipe details. Please try again later.");
+      });
+  }
+}
+
+// Function to display recipe details
+function displayRecipeDetails(recipe) {
+  document.getElementById("recipe-detail").innerHTML = `
+    <h2>${recipe.name}</h2>
+    <p><strong>Ingredients:</strong> ${recipe.ingredients.join(", ")}</p>
+    <p><strong>Instructions:</strong> ${recipe.instructions}</p>
+    <p><strong>Prep Time:</strong> ${recipe.prepTime}</p>
+    <p><strong>Cook Time:</strong> ${recipe.cookTime}</p>
+    <p><strong>Tags:</strong> ${recipe.tags.join(", ")}</p>
+  `;
 }
 
 // Function to pre-fill form for editing
