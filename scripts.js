@@ -53,7 +53,7 @@ function deleteRecipe(recipeId) {
     });
 }
 
-// Function to fetch recipe details and display them
+// Function to fetch recipe details
 function fetchRecipeDetails(recipeId) {
   fetch(`${apiUrl}/${recipeId}`)
     .then((response) => {
@@ -61,8 +61,7 @@ function fetchRecipeDetails(recipeId) {
       return response.json();
     })
     .then((recipe) => {
-      const recipeDetailElement = document.getElementById("recipe-detail");
-      recipeDetailElement.innerHTML = `
+      document.getElementById("recipe-detail").innerHTML = `
         <h2>${recipe.name}</h2>
         <p><strong>Ingredients:</strong> ${recipe.ingredients.join(", ")}</p>
         <p><strong>Instructions:</strong> ${recipe.instructions}</p>
@@ -73,7 +72,6 @@ function fetchRecipeDetails(recipeId) {
     })
     .catch((error) => {
       console.error("Error fetching recipe details:", error);
-      alert("Could not fetch recipe details. Please try again.");
     });
 }
 
@@ -128,9 +126,4 @@ function updateRecipe(event) {
 // Call fetchRecipes on homepage load
 window.onload = function () {
   if (document.getElementById("recipe-list")) fetchRecipes();
-  if (document.getElementById("recipe-detail")) {
-    const urlParams = new URLSearchParams(window.location.search);
-    const recipeId = urlParams.get('id');
-    if (recipeId) fetchRecipeDetails(recipeId);
-  }
 };
