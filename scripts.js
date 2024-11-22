@@ -3,6 +3,7 @@ const apiUrl = "https://recipeown.free.beeceptor.com/recipe"; // Replace with yo
 // Function to fetch recipes
 function fetchRecipes() {
   const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+  console.log("Fetched recipes from localStorage:", recipes); // Debugging log
   displayRecipes(recipes);
 }
 
@@ -10,6 +11,7 @@ function fetchRecipes() {
 function displayRecipes(recipes) {
   const recipeList = document.getElementById("recipe-list");
   recipeList.innerHTML = ""; // Clear existing items
+  console.log("Displaying recipes:", recipes); // Debugging log
   recipes.forEach((recipe) => {
     const li = document.createElement("li");
     li.innerHTML = `
@@ -22,13 +24,14 @@ function displayRecipes(recipes) {
     recipeList.appendChild(li);
   });
 }
+
+// Function to view recipe details
 function viewRecipeDetails(recipeId) {
   window.location.href = `recipe.html?id=${recipeId}`;
 }
 
 // Function to handle recipe deletion
 function deleteRecipe(recipeId) {
-  // Remove from localStorage
   const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
   const updatedRecipes = recipes.filter((recipe) => recipe.id !== recipeId);
   localStorage.setItem("recipes", JSON.stringify(updatedRecipes));
@@ -66,6 +69,9 @@ function addRecipe(event) {
   const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
   recipes.push(newRecipe);
   localStorage.setItem("recipes", JSON.stringify(recipes));
+
+  console.log("New Recipe Added:", newRecipe); // Debugging log
+  console.log("All Recipes:", recipes); // Debugging log
 
   alert("Recipe successfully added!");
   window.location.href = "index.html"; // Redirect to home page
