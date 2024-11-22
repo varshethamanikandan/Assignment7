@@ -26,7 +26,7 @@ function displayRecipes(recipes) {
   recipes.forEach((recipe) => {
     const li = document.createElement("li");
     li.innerHTML = `
-      <a href="recipe.html?id=${recipe.id}">${recipe.name}</a>
+      <span>${recipe.name}</span>
       <button onclick="editRecipe('${recipe.id}')">Edit</button>
       <button onclick="deleteRecipe('${recipe.id}')">Delete</button>
     `;
@@ -36,21 +36,37 @@ function displayRecipes(recipes) {
 
 // Function to handle recipe deletion
 function deleteRecipe(recipeId) {
+  // Attempt to delete from API (if needed)
   fetch(`${apiUrl}/${recipeId}`, {
     method: "DELETE",
   })
     .then((response) => {
       if (!response.ok) throw new Error("Failed to delete recipe");
       alert("Recipe deleted successfully");
+
+      // Remove from localStorage
       const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
       const updatedRecipes = recipes.filter((recipe) => recipe.id !== recipeId);
       localStorage.setItem("recipes", JSON.stringify(updatedRecipes));
-      fetchRecipes(); // Refresh list
+
+      // Update the DOM
+      displayRecipes(updatedRecipes);
     })
     .catch((error) => {
       console.error("Error deleting recipe:", error);
       alert("Could not delete recipe. Please try again.");
     });
+}
+
+// Function to pre-fill form for editing
+function editRecipe(recipeId) {
+  const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+  const recipe = recipes.find((r) => r.id === recipeId);
+  if (!recipe) {
+    alert("Recipe not found.");
+    return;
+  }
+  window.location.href = `edit-recipe.html?id=${recipeId}`;
 }
 
 // Function to fetch recipe details
@@ -92,17 +108,6 @@ function displayRecipeDetails(recipe) {
   `;
 }
 
-// Function to pre-fill form for editing
-function editRecipe(recipeId) {
-  const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-  const recipe = recipes.find((r) => r.id === recipeId);
-  if (!recipe) {
-    alert("Recipe not found.");
-    return;
-  }
-  window.location.href = `edit-recipe.html?id=${recipeId}`;
-}
-
 // Function to handle editing a recipe
 function updateRecipe(event) {
   event.preventDefault();
@@ -125,6 +130,7 @@ function updateRecipe(event) {
       if (!response.ok) throw new Error("Failed to update recipe");
       alert("Recipe updated successfully");
 
+      // Update localStorage
       const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
       const index = recipes.findIndex((r) => r.id === recipeId);
       if (index !== -1) {
