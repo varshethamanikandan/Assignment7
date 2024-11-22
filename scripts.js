@@ -1,22 +1,9 @@
-const apiUrl = "https://recipesmade.free.beeceptor.com"; // Replace with your Beeceptor URL
+const apiUrl = "https://recipeown.free.beeceptor.com/recipe"; // Replace with your Beeceptor URL
 
 // Function to fetch recipes
 function fetchRecipes() {
-  fetch(apiUrl)
-    .then((response) => {
-      if (!response.ok) throw new Error("Beeceptor fetch failed");
-      return response.json();
-    })
-    .then((data) => {
-      console.log({ data });
-      localStorage.setItem("recipes", JSON.stringify(data)); // Save for fallback
-      displayRecipes(data);
-    })
-    .catch((error) => {
-      console.error("Error fetching from Beeceptor, using local storage:", error);
-      const localRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
-      displayRecipes(localRecipes);
-    });
+  const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+  displayRecipes(recipes);
 }
 
 // Function to display recipes on the homepage
@@ -36,26 +23,13 @@ function displayRecipes(recipes) {
 
 // Function to handle recipe deletion
 function deleteRecipe(recipeId) {
-  // Attempt to delete from API (if needed)
-  fetch(`${apiUrl}/${recipeId}`, {
-    method: "DELETE",
-  })
-    .then((response) => {
-      if (!response.ok) throw new Error("Failed to delete recipe");
-      alert("Recipe deleted successfully");
+  // Remove from localStorage
+  const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+  const updatedRecipes = recipes.filter((recipe) => recipe.id !== recipeId);
+  localStorage.setItem("recipes", JSON.stringify(updatedRecipes));
 
-      // Remove from localStorage
-      const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-      const updatedRecipes = recipes.filter((recipe) => recipe.id !== recipeId);
-      localStorage.setItem("recipes", JSON.stringify(updatedRecipes));
-
-      // Update the DOM
-      displayRecipes(updatedRecipes);
-    })
-    .catch((error) => {
-      console.error("Error deleting recipe:", error);
-      alert("Could not delete recipe. Please try again.");
-    });
+  alert("Recipe deleted successfully");
+  displayRecipes(updatedRecipes); // Refresh the home page
 }
 
 // Function to pre-fill form for editing
@@ -69,30 +43,38 @@ function editRecipe(recipeId) {
   window.location.href = `edit-recipe.html?id=${recipeId}`;
 }
 
+// Function to add a new recipe
+function addRecipe(event) {
+  event.preventDefault();
+
+  const newRecipe = {
+    id: Date.now().toString(), // Unique ID for the recipe
+    name: document.getElementById("recipe-name").value,
+    ingredients: document.getElementById("recipe-ingredients").value.split(","),
+    instructions: document.getElementById("recipe-instructions").value,
+    prepTime: document.getElementById("recipe-prep-time").value,
+    cookTime: document.getElementById("recipe-cook-time").value,
+    tags: document.getElementById("recipe-tags").value.split(","),
+  };
+
+  // Save to localStorage
+  const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+  recipes.push(newRecipe);
+  localStorage.setItem("recipes", JSON.stringify(recipes));
+
+  alert("Recipe successfully added!");
+  window.location.href = "index.html"; // Redirect to home page
+}
+
 // Function to fetch recipe details
 function fetchRecipeDetails(recipeId) {
   const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
   const recipe = recipes.find((r) => r.id === recipeId);
 
   if (recipe) {
-    // If found in localStorage, display details without API call
-    console.log("Loaded from localStorage:", recipe);
     displayRecipeDetails(recipe);
   } else {
-    // Fall back to API fetch if not in localStorage
-    console.log("Fetching from API for Recipe ID:", recipeId);
-    fetch(`${apiUrl}/${recipeId}`)
-      .then((response) => {
-        if (!response.ok) throw new Error("Failed to fetch recipe details");
-        return response.json();
-      })
-      .then((recipe) => {
-        displayRecipeDetails(recipe);
-      })
-      .catch((error) => {
-        console.error("Error fetching recipe details:", error);
-        alert("Could not fetch recipe details. Please try again later.");
-      });
+    alert("Recipe not found!");
   }
 }
 
@@ -113,6 +95,7 @@ function updateRecipe(event) {
   event.preventDefault();
   const recipeId = document.getElementById("recipe-id").value;
   const updatedRecipe = {
+    id: recipeId,
     name: document.getElementById("recipe-name").value,
     ingredients: document.getElementById("recipe-ingredients").value.split(","),
     instructions: document.getElementById("recipe-instructions").value,
@@ -121,29 +104,17 @@ function updateRecipe(event) {
     tags: document.getElementById("recipe-tags").value.split(","),
   };
 
-  fetch(`${apiUrl}/${recipeId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updatedRecipe),
-  })
-    .then((response) => {
-      if (!response.ok) throw new Error("Failed to update recipe");
-      alert("Recipe updated successfully");
+  const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+  const index = recipes.findIndex((r) => r.id === recipeId);
+  if (index !== -1) {
+    recipes[index] = updatedRecipe;
+    localStorage.setItem("recipes", JSON.stringify(recipes));
 
-      // Update localStorage
-      const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-      const index = recipes.findIndex((r) => r.id === recipeId);
-      if (index !== -1) {
-        recipes[index] = { id: recipeId, ...updatedRecipe };
-        localStorage.setItem("recipes", JSON.stringify(recipes));
-      }
-
-      window.location.href = `recipe.html?id=${recipeId}`; // Redirect to details page
-    })
-    .catch((error) => {
-      console.error("Error updating recipe:", error);
-      alert("Could not update recipe. Please try again.");
-    });
+    alert("Recipe updated successfully!");
+    window.location.href = `recipe.html?id=${recipeId}`;
+  } else {
+    alert("Recipe not found!");
+  }
 }
 
 // Call fetchRecipes on homepage load
