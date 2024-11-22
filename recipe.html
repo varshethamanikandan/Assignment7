@@ -11,12 +11,14 @@
     <h1>Recipe Details</h1>
     <button onclick="location.href='index.html'">Back to Recipe List</button>
   </header>
-  <main id="recipe-detail"></main>
+  <main id="recipe-detail">
+    <!-- Recipe details will be injected here -->
+  </main>
   <script src="scripts.js"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const recipeId = urlParams.get('id');
-    fetchRecipeDetails(recipeId);
+    fetchRecipeDetails(recipeId); // Fetch recipe details when the page loads
   </script>
 </body>
 </html>
