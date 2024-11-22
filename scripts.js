@@ -22,6 +22,9 @@ function displayRecipes(recipes) {
     recipeList.appendChild(li);
   });
 }
+function viewRecipeDetails(recipeId) {
+  window.location.href = `recipe-details.html?id=${recipeId}`;
+}
 
 // Function to handle recipe deletion
 function deleteRecipe(recipeId) {
