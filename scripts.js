@@ -13,7 +13,9 @@ function displayRecipes(recipes) {
   recipes.forEach((recipe) => {
     const li = document.createElement("li");
     li.innerHTML = `
-      <span>${recipe.name}</span>
+      <span onclick="viewRecipeDetails('${recipe.id}')" style="cursor: pointer; text-decoration: underline; color: blue;">
+        ${recipe.name}
+      </span>
       <button onclick="editRecipe('${recipe.id}')">Edit</button>
       <button onclick="deleteRecipe('${recipe.id}')">Delete</button>
     `;
