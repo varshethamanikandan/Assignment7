@@ -73,8 +73,16 @@ function addRecipe(event) {
   console.log("New Recipe Added:", newRecipe); // Debugging log
   console.log("All Recipes:", recipes); // Debugging log
 
-  alert("Recipe successfully added!");
-  window.location.href = "index.html"; // Redirect to home page
+  // Show success message
+  const successMessage = document.getElementById("success-message");
+  successMessage.innerHTML = "Recipe successfully added!";
+  successMessage.style.display = "block";
+
+  // Optionally, hide the success message after 3 seconds
+  setTimeout(() => {
+    successMessage.style.display = "none";
+    window.location.href = "index.html"; // Redirect to home page
+  }, 3000); // 3 seconds delay
 }
 
 // Function to fetch recipe details
